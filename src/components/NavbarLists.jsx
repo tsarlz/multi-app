@@ -1,8 +1,15 @@
 // "use client";
+import { createClient } from "@/utils/supabase/server";
 import Link from "next/link";
 import React from "react";
 
-const NavbarLists = () => {
+const NavbarLists = async () => {
+  const supabase = await createClient();
+  const {
+    data: { user },
+    error,
+  } = await supabase.auth.getUser();
+
   const lists = [
     { path: "/todo-lists", label: "Todo Lists App" },
     { path: "/google-drive-lite", label: "Goggle Drive Lite" },
@@ -10,6 +17,8 @@ const NavbarLists = () => {
     { path: "/pokemon-review-app", label: "Pokemon Review App" },
     { path: "/markdown-note-app", label: "Markdown Notes App" },
   ];
+
+  if (!user) return null;
   return (
     <ul className="flex flex-col p-4 md:p-0 mt-4 font-medium border border-gray-100 rounded-lg bg-gray-50 md:space-x-8 rtl:space-x-reverse md:flex-row md:mt-0 md:border-0 md:bg-white dark:bg-gray-800 md:dark:bg-gray-900 dark:border-gray-700">
       {lists &&

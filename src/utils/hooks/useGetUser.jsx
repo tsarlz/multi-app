@@ -1,9 +1,11 @@
 import { useEffect, useMemo, useState } from "react";
 import { createClient } from "../supabase/client";
+import { useRouter } from "next/navigation";
 
 const useGetUser = () => {
   const supabase = useMemo(() => createClient(), []);
   const [user, setUser] = useState([]);
+  // const router = useRouter();
 
   useEffect(() => {
     (async () => {
@@ -36,7 +38,6 @@ const useGetUser = () => {
       subscription?.unsubscribe(); // Cleanup listener correctly
     };
   }, []);
-
   return { user, supabase };
 };
 

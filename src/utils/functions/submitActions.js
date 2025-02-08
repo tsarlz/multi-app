@@ -42,5 +42,5 @@ export const handleRegister = async (e) => {
   }
 
   alert("Registration successful, please confirm your email.");
-  redirect("/");
+  redirect("https://mail.google.com/");
 };
