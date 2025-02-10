@@ -1,6 +1,5 @@
 "use client";
 import { createClient } from "@/utils/supabase/client";
-import { redirect } from "next/navigation";
 
 // GetData Utility Function
 async function getData(e) {
@@ -27,7 +26,7 @@ export const handleLogin = async (e) => {
     alert(error.message);
     return;
   }
-  redirect("/");
+  window.location.href = "/";
 };
 
 //Handle User Registers
@@ -42,5 +41,5 @@ export const handleRegister = async (e) => {
   }
 
   alert("Registration successful, please confirm your email.");
-  redirect("https://mail.google.com/");
+  window.location.href = "https://mail.google.com/";
 };

@@ -1,7 +1,7 @@
 "use server";
 import Link from "next/link";
 import Form from "@/components/Form"; // Dynamic Form
-import { handleRegister } from "@/utils/functions/submitActions"; // Import Function that handles User Registration
+import { handleRegister } from "@/utils/functions/database/submitActions"; // Import Function that handles User Registration
 
 const Page = () => {
   return (

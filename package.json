@@ -9,11 +9,16 @@
     "lint": "next lint"
   },
   "dependencies": {
+    "@coreui/coreui": "^5.2.0",
+    "@coreui/coreui-pro": "^5.9.0",
+    "@coreui/react": "^5.5.0",
+    "@coreui/react-pro": "^5.12.0",
     "@supabase/ssr": "^0.5.2",
     "@supabase/supabase-js": "^2.48.1",
     "next": "15.1.6",
     "react": "^19.0.0",
     "react-dom": "^19.0.0",
+    "react-icons": "^5.4.0",
     "swr": "^2.3.2",
     "uuid": "^11.0.5"
   },

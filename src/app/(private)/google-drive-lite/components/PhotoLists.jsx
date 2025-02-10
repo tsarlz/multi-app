@@ -1,46 +1,9 @@
-import React, { useEffect, useState } from "react";
-
 const PhotoLists = ({
   photos,
   handleClickEdit,
   handleClickDelete,
-  setPhotos,
-  search,
-  sort,
-  user,
-  supabase,
+  isLoading,
 }) => {
-  const [isLoading, setIsLoading] = useState(true);
-  useEffect(() => {
-    if (!user.id) return;
-    async function fethPhotos() {
-      let query = supabase
-        .from("photos")
-        .select("name, url, updated_at, id, storage_name")
-        .eq("user_id", user.id);
-
-      try {
-        if (search) query = query.ilike("name", `%${search}%`);
-        if (sort === "byName") {
-          query = query.order("name", {
-            ascending: true,
-          });
-        } else if (sort === "byDate") {
-          query = query.order("updated_at", { ascending: false });
-        }
-
-        const { data, error } = await query;
-
-        if (error) throw new Error(error);
-        setPhotos(data);
-      } catch (error) {
-        console.log(error.message);
-      } finally {
-        setIsLoading(false);
-      }
-    }
-    fethPhotos();
-  }, [user, search, sort]);
   return (
     <ul className="grid grid-cols-3 min-h-[50vh]  gap-5 justify-center  place-items-center ">
       {isLoading ? (

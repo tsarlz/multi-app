@@ -9,6 +9,7 @@ const NavbarButtons = () => {
   const router = useRouter();
 
   const handleLogout = async () => {
+    console.log("Logout clicked");
     try {
       const { error } = await supabase.auth.signOut();
 
@@ -26,6 +27,7 @@ const NavbarButtons = () => {
       const { data, error } = await adminAuthClient.deleteUser(user.id);
 
       if (error) throw new Error(error);
+
       await supabase.auth.signOut();
       router.push("/");
     } catch (error) {

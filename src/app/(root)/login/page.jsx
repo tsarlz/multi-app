@@ -1,6 +1,6 @@
 "use server";
 import Link from "next/link";
-import { handleLogin } from "@/utils/functions/submitActions"; // Import Function that handles uUser login
+import { handleLogin } from "@/utils/functions/database/submitActions"; // Import Function that handles uUser login
 import Form from "@/components/Form";
 
 const Page = () => {

@@ -1,14 +1,9 @@
-// "use client";
-import { createClient } from "@/utils/supabase/server";
+"use client";
+import useGetUser from "@/utils/hooks/useGetUser";
 import Link from "next/link";
-import React from "react";
 
-const NavbarLists = async () => {
-  const supabase = await createClient();
-  const {
-    data: { user },
-    error,
-  } = await supabase.auth.getUser();
+const NavbarLists = () => {
+  const { user } = useGetUser();
 
   const lists = [
     { path: "/todo-lists", label: "Todo Lists App" },

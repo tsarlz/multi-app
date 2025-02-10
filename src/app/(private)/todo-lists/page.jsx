@@ -50,7 +50,7 @@ const Page = () => {
 
   // Read Todo in the database
   useEffect(() => {
-    if (!user.id) return;
+    if (!user?.id) return;
     const fetchTodos = async () => {
       try {
         const { data, error } = await supabase

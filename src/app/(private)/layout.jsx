@@ -9,9 +9,8 @@ const Layout = async ({ children }) => {
     data: { user },
     error,
   } = await supabase.auth.getUser();
-  if (!user) {
-    redirect("/register");
-    return;
+  if (!user || error) {
+    redirect("/login");
   }
   return (
     <html>
