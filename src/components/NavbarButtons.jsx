@@ -14,7 +14,7 @@ const NavbarButtons = () => {
       const { error } = await supabase.auth.signOut();
 
       if (error) throw new Error(error);
-      router.push("/");
+      router.push("/register");
     } catch (error) {
       console.log(error.message);
     }
@@ -29,7 +29,7 @@ const NavbarButtons = () => {
       if (error) throw new Error(error);
 
       await supabase.auth.signOut();
-      router.push("/");
+      router.push("/register");
     } catch (error) {
       console.log(error.message);
     }

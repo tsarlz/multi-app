@@ -1,12 +1,14 @@
 import React, { useEffect, useState } from "react";
 
-const useFetch = (search, user, sort, supabase, appType) => {
+const useFetch = (search, user, sort, supabase, appType, fetch) => {
   const [photos, setPhotos] = useState([]);
+  const [notes, setNotes] = useState([]);
   const [isLoading, setIsLoading] = useState(true);
 
   useEffect(() => {
     if (!user) return;
-    async function fethPhotos() {
+    async function fetchPhotos() {
+      setIsLoading(true);
       // Fetch the Photos and reviews table
       let query = supabase
         .from("photos")
@@ -34,10 +36,33 @@ const useFetch = (search, user, sort, supabase, appType) => {
         setIsLoading(false);
       }
     }
-    fethPhotos();
-  }, [user, search, sort]);
 
-  return { isLoading, photos, setPhotos };
+    async function fetchNotes() {
+      setIsLoading(true);
+      try {
+        const { data, error } = await supabase
+          .from("notes")
+          .select("title, content, user_id, id")
+          .eq("user_id", user.id);
+
+        if (error) throw new Error(error);
+
+        setNotes(data);
+      } catch (error) {
+        console.log(error);
+      } finally {
+        setIsLoading(false);
+      }
+    }
+
+    if (fetch == "photos") {
+      fetchPhotos();
+    } else {
+      fetchNotes();
+    }
+  }, [user, search, sort, fetch]);
+
+  return { isLoading, photos, setPhotos, notes, setNotes };
 };
 
 export default useFetch;

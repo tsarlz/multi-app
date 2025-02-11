@@ -2,7 +2,7 @@
 import useGetUser from "@/utils/hooks/useGetUser";
 import React, { useRef, useState } from "react";
 import PhotoLists from "./components/PhotoLists";
-import Filters from "./components/Filters";
+import Filters from "../../../components/Filters";
 import AppHeader from "@/components/AppHeader";
 import useFetch from "@/utils/hooks/useFetch";
 //Database
@@ -111,14 +111,9 @@ const Page = () => {
     user,
     sort,
     supabase,
-    "google-drive"
+    "google-drive",
+    "photos"
   );
-
-  //EDIT - Initiate Edit
-  const handleClickEdit = async (photo) => {
-    setToEditName(photo.storage_name);
-    fileRef.current.click();
-  };
 
   // DELETE -
   const handleClickDelete = async (photo) => {
@@ -132,6 +127,12 @@ const Page = () => {
     setPhotos((prev) => prev.filter((p) => p.id !== photo.id));
   };
 
+  //EDIT - Initiate Edit
+  const handleClickEdit = async (photo) => {
+    setToEditName(photo.storage_name);
+    fileRef.current.click();
+  };
+
   return (
     <AppContainer>
       <AppHeader
@@ -141,6 +142,7 @@ const Page = () => {
         setFile={setFile}
         fileRef={fileRef}
         file={file}
+        buttonText={"Image"}
       />
       {/* Search and Sort Section */}
       <section className="flex justify-between items-center">
@@ -153,10 +155,6 @@ const Page = () => {
           handleClickDelete={handleClickDelete}
           handleClickEdit={handleClickEdit}
           photos={photos}
-          setPhotos={setPhotos}
-          user={user}
-          sort={sort}
-          search={search}
           isLoading={isLoading}
         />
       </section>

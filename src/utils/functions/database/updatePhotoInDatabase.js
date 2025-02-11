@@ -1,4 +1,4 @@
-const timestamp = new Date();
+const timestamp = new Date().toISOString();
 
 export const updatePhotoInDatabase = async (
   colName,
@@ -20,7 +20,7 @@ export const updatePhotoInDatabase = async (
           ? photoName
           : file.name,
       url: photoBaseUrl + newPhoto.path,
-      updated_at: timestamp.toLocaleString(),
+      updated_at: timestamp,
     })
     .eq(colName, toEditName)
     .select();

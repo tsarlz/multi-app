@@ -1,6 +1,14 @@
 import React from "react";
 
-const AppHeader = ({ title, formSubmit, setFile, fileRef, isEdit, file }) => {
+const AppHeader = ({
+  title,
+  formSubmit,
+  setFile,
+  fileRef,
+  isEdit,
+  file,
+  buttonText,
+}) => {
   return (
     <div className="flex justify-center items-center sticky top-[4rem] z-20 bg-white pb-4">
       <header className="text-center ">
@@ -20,7 +28,7 @@ const AppHeader = ({ title, formSubmit, setFile, fileRef, isEdit, file }) => {
               type="submit"
               className="px-8 bg-indigo-600 hover:bg-indigo-700 text-white font-medium py-2.5 rounded-lg transition-colors"
             >
-              {file && isEdit ? "Update" : "Upload"} Image
+              {file && isEdit ? "Update" : "Upload"} {buttonText}
             </button>
           </div>
         </form>

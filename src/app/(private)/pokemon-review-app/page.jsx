@@ -1,33 +1,171 @@
 "use client";
 import AppContainer from "@/components/AppContainer";
-import React, { useState } from "react";
+import AppHeader from "@/components/AppHeader";
+import React, { useRef, useState } from "react";
+import Filters from "../../../components/Filters";
+import useGetUser from "@/utils/hooks/useGetUser";
+import useFetch from "@/utils/hooks/useFetch";
+import ReviewContents from "@/components/ReviewContents";
+import { uploadInStorage } from "@/utils/functions/storage/uploadInStorage";
+import { deleteInStorage } from "@/utils/functions/storage/deleteInStorage";
+import { insertPhotoInDatabase } from "@/utils/functions/database/insertPhotoInDatabase";
+import { updatePhotoInDatabase } from "@/utils/functions/database/updatePhotoInDatabase";
+import { deletePhotoInDatabase } from "@/utils/functions/database/deletePhotoInDatabase";
 
 const Page = () => {
+  const photoBaseUrl =
+    "https://yoclpkzcxjwstelpdytl.supabase.co/storage/v1/object/public/pokemon_photos/";
+  const { user, supabase } = useGetUser();
+  const fileRef = useRef(null);
+  const isUpdating = useRef(false);
   const [file, setFile] = useState(null);
+  const [toEditName, setToEditName] = useState(null);
+  const [sort, setSort] = useState("updated_at");
+  const [search, setSearch] = useState("");
+
+  // REUSABLE DELETE in STORAGE FUNCTION
+  const deletePhotoInStorage = async (toDeletePhoto) =>
+    await deleteInStorage("google_drive_photos", toDeletePhoto, supabase, user);
+
+  // REUSABLE UPLOAD in STORAGE FUNCTION
+  const uploadPhotoInStorage = async () => {
+    const { data } = await uploadInStorage(
+      "pokemon_photos",
+      file,
+      user,
+      supabase
+    );
+
+    return { data };
+  };
+
+  //CREATE AND UPDATE
+  const handleUploadAndUpdate = async (e) => {
+    e.preventDefault();
+
+    try {
+      if (!file || !user || isUpdating.current) return;
+      isUpdating.current = true;
+
+      // Check if UPDATE or UPLOAD
+      if (toEditName) {
+        // UPDATE
+
+        //DELETE from STORAGE the PHOTO to UPDATE
+        await deletePhotoInStorage(toEditName);
+
+        //UPLOAD THE NEW PHOTO
+        const { data: updatedPhoto } = await uploadPhotoInStorage();
+
+        // Get the PHOTO storage name
+        const storageName = updatedPhoto.path.split("/")[1];
+
+        // INSERT THE UPDATED PHOTO in DATABASE
+        const { data } = await updatePhotoInDatabase(
+          "storage_name",
+          toEditName,
+          photoBaseUrl,
+          updatedPhoto,
+          file,
+          storageName,
+          supabase,
+          "pokemon"
+        );
+
+        // Update UI
+        setPhotos((prev) =>
+          prev.map((p) =>
+            p.storage_name === toEditName ? { ...p, ...data[0] } : p
+          )
+        );
+      } else {
+        // UPLOAD
+
+        // UPLOAD PHOTO TO STORAGE
+        const { data: newImage } = await uploadPhotoInStorage();
+
+        // Get the storage name
+        const storageName = newImage.path.split("/")[1];
+
+        // INSERT PHOTO TO DATABASE
+        const { data: insertRes } = await insertPhotoInDatabase(
+          "pokemon",
+          photoBaseUrl,
+          newImage,
+          file,
+          storageName,
+          user,
+          supabase
+        );
+
+        //Update UI
+        setPhotos((prev) => [...prev, ...insertRes]);
+      }
+    } catch (error) {
+      console.log(error);
+    } finally {
+      isUpdating.current = false;
+      e.target.reset();
+      setFile(null);
+    }
+  };
+
+  // READ - Custom Hooks for DATA FETChING
+  const { isLoading, photos, setPhotos } = useFetch(
+    search,
+    user,
+    sort,
+    supabase,
+    "pokemon", // Filter the photos App Type
+    "photos"
+  );
+
+  //DELETE
+  const handleDeleteFunction = async (photo) => {
+    // DELETE in Storage
+    await deletePhotoInStorage(photo.storage_name);
+
+    // DELETE in DATABASE
+    await deletePhotoInDatabase(photo, supabase);
+
+    //UPDATE UI
+    setPhotos((prev) => prev.filter((p) => p.id !== photo.id));
+  };
+
+  // INITIALIZE Edit
+  const handleFileOpen = async (photo) => {
+    fileRef.current.click();
+    setToEditName(photo.storage_name);
+  };
+
   return (
     <AppContainer>
-      <div className="flex justify-center items-center sticky top-[4rem] z-20 bg-white pb-4">
-        <header className="text-center ">
-          <h1 className="text-2xl text-indigo-500 font-bold text-nowrap text-center">
-            Pokemon Review
-          </h1>
-
-          <form>
-            <div className="flex flex-col justify-center items-center space-y-3 ">
-              <input
-                type="file"
-                className="border-2 border-gray-300 rounded-md"
-              />
-              <button
-                type="submit"
-                className="px-8 bg-indigo-600 hover:bg-indigo-700 text-white font-medium py-2.5 rounded-lg transition-colors"
-              >
-                Upload Image
-              </button>
-            </div>
-          </form>
-        </header>
-      </div>
+      <AppHeader
+        title={"Pokemon Review"}
+        formSubmit={handleUploadAndUpdate}
+        isEdit={toEditName}
+        setFile={setFile}
+        fileRef={fileRef}
+        file={file}
+        buttonText={"Pokemon"}
+      />
+      {/* Search and Sort Section */}
+      <section className="flex justify-between items-center">
+        <Filters setSearch={setSearch} setSort={setSort} />
+      </section>
+      {/* Pokemon Display Section */}
+      <section className="bg-gray-200 p-10 max-h-full mb-10">
+        <ReviewContents
+          photos={photos}
+          supabase={supabase}
+          setPhotos={setPhotos}
+          setFile={setFile}
+          handleDeleteFunction={handleDeleteFunction}
+          handleFileOpen={handleFileOpen}
+          isLoading={isLoading}
+          noDataText={"No pokemon to review yet."}
+        />
+      </section>
     </AppContainer>
   );
 };

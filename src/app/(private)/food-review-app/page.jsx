@@ -13,6 +13,8 @@ import { insertPhotoInDatabase } from "@/utils/functions/database/insertPhotoInD
 import { updatePhotoInDatabase } from "@/utils/functions/database/updatePhotoInDatabase";
 import { deletePhotoInDatabase } from "@/utils/functions/database/deletePhotoInDatabase";
 import AppContainer from "@/components/AppContainer";
+import ContentLists from "@/components/ContentLists";
+import ReviewContents from "@/components/ReviewContents";
 
 const Page = () => {
   const { user, supabase } = useGetUser();
@@ -49,42 +51,45 @@ const Page = () => {
       isUpdating.current = true; // block next request if the first 1 didn't finish yet
 
       if (toEditName) {
-        //DELETE PHOTO TO STORAGE
+        // UPDATE
+
+        //DELETE from STORAGE the PHOTO to UPDATE
         await deletePhotoInStorage(toEditName);
 
         // ADD the new PHOTO to STORAGE
-        const { data: newPhoto } = await UploadPhotoInStorage();
+        const { data: updatedPhoto } = await UploadPhotoInStorage();
 
-        const storageName = newPhoto.path.split("/")[1]; //Get the filename in storage
+        // Get the PHOTO storage name
+        const storageName = updatedPhoto.path.split("/")[1];
+
         //UPDATE THE PHOTO SELECTED FROM THE DATABASE
         const { data, error } = await updatePhotoInDatabase(
           "storage_name",
           toEditName,
           photoBaseUrl,
-          newPhoto,
+          updatedPhoto,
           file,
           storageName,
           supabase,
           "food-review"
         );
 
-        if (error) {
-          console.log(error);
-          return;
-        }
-
-        // Update Image in UI
+        // Update UI
         setPhotos((prev) =>
           prev.map((p) =>
             p.storage_name === toEditName ? { ...p, ...data[0] } : p
           )
         );
       } else {
-        // UPLOAD new PHOTO to STORAGE
+        // UPLOAD
+
+        // UPLOAD PHOTO TO STORAGE
         const { data: newPhoto } = await UploadPhotoInStorage();
 
-        //INSERT Photo to Database
+        // Get the storage name
         const storageName = newPhoto.path.split("/")[1];
+
+        // INSERT PHOTO TO DATABASE
         const { data } = await insertPhotoInDatabase(
           "food-review",
           photoBaseUrl,
@@ -95,7 +100,7 @@ const Page = () => {
           supabase
         );
 
-        // Update the UI
+        // Update UI
         setPhotos((prev) => [...prev, ...data]);
       }
     } catch (error) {
@@ -107,13 +112,14 @@ const Page = () => {
     }
   };
 
-  // READ - CUstom hook to fetch the Photos
+  // READ - Custom Hooks for DATA FETChING
   const { isLoading, photos, setPhotos } = useFetch(
     null,
     user,
     sort,
     supabase,
-    "food-review"
+    "food-review",
+    "photos"
   );
 
   // DELETE
@@ -127,9 +133,10 @@ const Page = () => {
     setPhotos((prev) => prev.filter((p) => p.id !== photo.id));
   };
 
+  // INITIALIZE EDIT
   function handleFileOpen(photo) {
-    fileRef.current.click();
     setToEditName(photo.storage_name);
+    fileRef.current.click();
   }
   return (
     <AppContainer>
@@ -140,6 +147,7 @@ const Page = () => {
         setFile={setFile}
         fileRef={fileRef}
         file={file}
+        buttonText={"Food"}
       />
       {/* Sort Input */}
       <section className="flex justify-center items-center">
@@ -147,7 +155,7 @@ const Page = () => {
       </section>
       {/* Contents */}
       <section className="bg-gray-200 p-10 max-h-full mb-10">
-        <Foods
+        <ReviewContents
           photos={photos}
           supabase={supabase}
           setPhotos={setPhotos}
@@ -155,6 +163,7 @@ const Page = () => {
           handleDeleteFunction={handleDeleteFunction}
           handleFileOpen={handleFileOpen}
           isLoading={isLoading}
+          noDataText={"No food to review yet."}
         />
       </section>
     </AppContainer>

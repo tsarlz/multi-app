@@ -29,3 +29,26 @@ body {
 .scroll-none::-webkit-scrollbar {
   display: none; /* Hide scrollbar in Chrome, Safari */
 }
+
+.scroll-style {
+  overflow-y: auto;
+}
+/* width */
+.scroll-style.scroll-style::-webkit-scrollbar {
+  width: 10px;
+}
+
+/* Track */
+.scroll-style::-webkit-scrollbar-track {
+  background: #f1f1f1;
+}
+
+/* Handle */
+.scroll-style::-webkit-scrollbar-thumb {
+  background: #888;
+}
+
+/* Handle on hover */
+.scroll-style::-webkit-scrollbar-thumb:hover {
+  background: #555;
+}
