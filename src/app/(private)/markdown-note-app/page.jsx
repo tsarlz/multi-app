@@ -107,17 +107,17 @@ const Page = () => {
               notes.map((note) => (
                 <li
                   onClick={() => handleToEditNote(note)}
-                  key={note.id}
+                  key={note?.id}
                   className={`bg-gray-100 w-full truncate p-3 rounded-2xl relative  group hover:bg-gray-300 ${
-                    activeNote == note.id && "bg-blue-300"
+                    activeNote == note?.id && "bg-blue-300"
                   }`}
                 >
-                  {note.title ? note.title : "Title"}
+                  {note?.title ? note.title : "Title"}
 
                   <FiTrash
                     onClick={(e) => {
                       e.stopPropagation();
-                      handleDelete(note.id);
+                      handleDelete(note?.id);
                     }}
                     className="absolute top-1/2 right-2 -translate-y-1/2  opacity-0 group-hover:opacity-100"
                   />

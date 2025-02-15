@@ -11,7 +11,7 @@ const Page = () => {
           Register
         </h2>
         {/* Import Dynamic Form */}
-        <Form action={handleRegister} />
+        <Form action={handleRegister} type={"register"} />
 
         <div className="mt-6 text-center text-sm text-gray-600">
           Already have an account?

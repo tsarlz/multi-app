@@ -58,10 +58,16 @@ export const handleRegister = async (e) => {
       return;
     }
 
+    // Store email in sessionStorage before redirecting
+    sessionStorage.setItem("registeredEmail", data.email);
+
     toast.success("Registration successful, please confirm your email.");
     redirect("/login");
   } else {
     // If user exist
+
+    // Store email in sessionStorage before redirecting
+    sessionStorage.setItem("registeredEmail", data.email);
     toast.info("You already have an account please login");
     redirect("/login");
   }
