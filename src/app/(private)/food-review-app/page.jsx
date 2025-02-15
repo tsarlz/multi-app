@@ -3,17 +3,14 @@ import React, { useRef, useState } from "react";
 import useGetUser from "@/utils/hooks/useGetUser";
 import AppHeader from "@/components/AppHeader";
 import Sort from "@/components/Sort";
-import Foods from "./components/Foods";
 import useFetch from "@/utils/hooks/useFetch";
-//Storage
-import { uploadInStorage } from "@/utils/functions/storage/uploadInStorage"; // Function to UPLOAD Phot to Storage
-import { deleteInStorage } from "@/utils/functions/storage/deleteInStorage"; // Function to DELETE Photo to Storage
-//Database
-import { insertPhotoInDatabase } from "@/utils/functions/database/insertPhotoInDatabase";
-import { updatePhotoInDatabase } from "@/utils/functions/database/updatePhotoInDatabase";
-import { deletePhotoInDatabase } from "@/utils/functions/database/deletePhotoInDatabase";
+import { uploadInStorage, deleteInStorage } from "@/utils/functions/storage";
+import {
+  insertPhotoInDatabase,
+  updatePhotoInDatabase,
+  deletePhotoInDatabase,
+} from "@/utils/functions/database";
 import AppContainer from "@/components/AppContainer";
-import ContentLists from "@/components/ContentLists";
 import ReviewContents from "@/components/ReviewContents";
 
 const Page = () => {

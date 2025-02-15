@@ -2,6 +2,8 @@
 
 import { createClient } from "@/utils/supabase/client";
 import { adminAuthClient } from "@/utils/supabase/admin";
+import { toast } from "react-toastify";
+import { redirect } from "next/navigation";
 
 // GetData Utility Function
 async function getData(e) {
@@ -25,7 +27,7 @@ export const handleLogin = async (e) => {
   const { error } = await supabase.auth.signInWithPassword(data); // POST Login Credentials in Database
 
   if (error) {
-    alert(error.message);
+    toast.error(error.message);
     return;
   }
   window.location.href = "/";
@@ -39,43 +41,28 @@ export const handleRegister = async (e) => {
   const { data: adminRes, error: adminResError } =
     await adminAuthClient.listUsers();
 
+  if (adminResError) {
+    toast.error("Error checking if user already exist");
+    return;
+  }
+
   //Find if the user EMAIL is already in database
-  const userExisted = adminRes.users.filter(
-    (user) => user.email === data.email
-  );
+  const userExists = adminRes.users.some((user) => user.email === data.email);
 
-  if (userExisted.length <= 0) {
+  if (!userExists) {
     // If User didn't Exist
-
     // Register User
     const { error } = await supabase.auth.signUp(data);
-
     if (error) {
-      alert(error.message);
+      toast.error(error.message);
       return;
     }
 
-    alert("Registration successful, please confirm your email.");
-    window.location.href = "https://mail.google.com/";
+    toast.success("Registration successful, please confirm your email.");
+    redirect("/login");
   } else {
     // If user exist
-
-    //Check if Email is comfirmed
-    const isUserEmailConfirmed = userExisted[0].user_metadata.email_verified;
-    if (isUserEmailConfirmed) {
-      alert("You already have an account please login");
-      return;
-    } else {
-      //Resend Confirmation Email
-      const { error } = await supabase.auth.resend({
-        type: "signup",
-        email: data.email,
-        options: {
-          emailRedirectTo: "https://mail.google.com/",
-        },
-      });
-      alert("Confirmation email resent. Please check your inbox.");
-      window.location.href = "https://mail.google.com/";
-    }
+    toast.info("You already have an account please login");
+    redirect("/login");
   }
 };

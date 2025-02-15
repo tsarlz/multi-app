@@ -3,6 +3,7 @@ import useGetUser from "@/utils/hooks/useGetUser";
 import React, { useEffect, useState } from "react";
 import TodoLists from "./Components/TodoLists";
 import TodoHeader from "./Components/TodoHeader";
+import { toast } from "react-toastify";
 
 const Page = () => {
   const { user, supabase } = useGetUser();
@@ -13,7 +14,11 @@ const Page = () => {
 
   // Funtion handles edit and add todo
   const handleButtonClick = async () => {
-    if (!newTodo.trim() || !user) return;
+    if (!user) return;
+    if (!newTodo.trim()) {
+      toast.error("Invalid todo");
+      return;
+    }
 
     try {
       // Undentify if it is Edit or Add Todo

@@ -1,7 +1,8 @@
-import Navbar from "@/components/Navbar";
+import Navbar from "@/components/navbar/Navbar";
 import "../globals.css";
 import { createClient } from "@/utils/supabase/server";
 import { redirect } from "next/navigation";
+import { ToastContainer } from "react-toastify";
 
 const Layout = async ({ children }) => {
   const supabase = await createClient();
@@ -17,6 +18,7 @@ const Layout = async ({ children }) => {
       <body>
         <Navbar />
         {children}
+        <ToastContainer />
       </body>
     </html>
   );

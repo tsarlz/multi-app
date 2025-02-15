@@ -6,11 +6,12 @@ import Filters from "../../../components/Filters";
 import useGetUser from "@/utils/hooks/useGetUser";
 import useFetch from "@/utils/hooks/useFetch";
 import ReviewContents from "@/components/ReviewContents";
-import { uploadInStorage } from "@/utils/functions/storage/uploadInStorage";
-import { deleteInStorage } from "@/utils/functions/storage/deleteInStorage";
-import { insertPhotoInDatabase } from "@/utils/functions/database/insertPhotoInDatabase";
-import { updatePhotoInDatabase } from "@/utils/functions/database/updatePhotoInDatabase";
-import { deletePhotoInDatabase } from "@/utils/functions/database/deletePhotoInDatabase";
+import { uploadInStorage, deleteInStorage } from "@/utils/functions/storage";
+import {
+  insertPhotoInDatabase,
+  updatePhotoInDatabase,
+  deletePhotoInDatabase,
+} from "@/utils/functions/database";
 
 const Page = () => {
   const photoBaseUrl =

@@ -19,6 +19,7 @@ const AppHeader = ({
         <form onSubmit={formSubmit}>
           <div className="flex flex-col justify-center items-center space-y-3 ">
             <input
+              aria-label="fileInput"
               onChange={(e) => setFile(e.target.files[0])}
               ref={fileRef}
               type="file"

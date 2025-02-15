@@ -19,6 +19,7 @@ const EditDeleteIcons = ({
       }}
     >
       <svg
+        aria-label="deleteIcon"
         onClick={deleteFunction}
         className="w-6 h-6 text-red-500 hover:text-red-700 dark:text-white"
         aria-hidden="true"

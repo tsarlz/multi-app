@@ -1,7 +1,6 @@
 "use client";
 import ReactMarkdown from "react-markdown";
 import { FiPlusCircle } from "react-icons/fi";
-import { HiPencil } from "react-icons/hi2";
 import { FiTrash } from "react-icons/fi";
 import React, { useEffect, useState } from "react";
 import useGetUser from "@/utils/hooks/useGetUser";
