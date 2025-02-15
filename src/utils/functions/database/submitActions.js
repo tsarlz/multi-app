@@ -3,10 +3,9 @@
 import { createClient } from "@/utils/supabase/client";
 import { adminAuthClient } from "@/utils/supabase/admin";
 import { toast } from "react-toastify";
-import { redirect } from "next/navigation";
 
 // GetData Utility Function
-async function getData(e) {
+const getData = async (e) => {
   e.preventDefault();
 
   const supabase = createClient();
@@ -18,10 +17,10 @@ async function getData(e) {
   };
 
   return { supabase, data };
-}
+};
 
 // Handle User Login
-export const handleLogin = async (e) => {
+export const handleLogin = async (e, router) => {
   const { supabase, data } = await getData(e);
 
   const { error } = await supabase.auth.signInWithPassword(data); // POST Login Credentials in Database
@@ -30,11 +29,12 @@ export const handleLogin = async (e) => {
     toast.error(error.message);
     return;
   }
-  window.location.href = "/";
+  toast.success("You're logged in.");
+  router.push("/");
 };
 
 //Handle User Registers
-export const handleRegister = async (e) => {
+export const handleRegister = async (e, router) => {
   const { supabase, data } = await getData(e); //Invoke GetData Utility Function
 
   //Check if email already exist
@@ -58,17 +58,14 @@ export const handleRegister = async (e) => {
       return;
     }
 
-    // Store email in sessionStorage before redirecting
-    sessionStorage.setItem("registeredEmail", data.email);
-
-    toast.success("Registration successful, please confirm your email.");
-    redirect("/login");
+    toast.success("Registration successful");
+    router.push("/");
   } else {
     // If user exist
 
-    // Store email in sessionStorage before redirecting
     sessionStorage.setItem("registeredEmail", data.email);
+
     toast.info("You already have an account please login");
-    redirect("/login");
+    router.push("/login");
   }
 };

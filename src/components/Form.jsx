@@ -1,7 +1,9 @@
 "use client";
-import { useState, useEffect } from "react";
+import { useRouter } from "next/navigation";
+import { useEffect, useState } from "react";
 
-const Form = ({ action, type }) => {
+const Form = ({ action, kind }) => {
+  const router = useRouter();
   const [email, setEmail] = useState("");
 
   const formInputs = [
@@ -10,16 +12,17 @@ const Form = ({ action, type }) => {
   ];
 
   useEffect(() => {
-    const storedEmail = sessionStorage.getItem("registeredEmail");
-    if (type === "login") {
+    if (kind === "login") {
+      const storedEmail = sessionStorage.getItem("registeredEmail");
       if (storedEmail) {
         setEmail(storedEmail);
         sessionStorage.removeItem("registeredEmail");
       }
     }
-  }, [type]);
+  }, [kind]);
+
   return (
-    <form noValidate onSubmit={action} className="space-y-4">
+    <form noValidate onSubmit={(e) => action(e, router)} className="space-y-4">
       {formInputs.map(({ label, type, placeholder }) => (
         // --- Email and Password Input
         <div key={label}>
@@ -40,7 +43,7 @@ const Form = ({ action, type }) => {
         type="submit"
         className="w-full bg-indigo-600 hover:bg-indigo-700 text-white font-medium py-2.5 rounded-lg transition-colors"
       >
-        {type === "login" ? "Login" : "Register"}
+        {kind === "login" ? "Login" : "Register"}
       </button>
     </form>
   );

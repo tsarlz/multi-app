@@ -12,7 +12,7 @@ const Page = () => {
         </h2>
 
         {/* Import Dynamic Form */}
-        <Form action={handleLogin} type={"login"} />
+        <Form action={handleLogin} kind={"login"} />
 
         <div className="mt-6 text-center text-sm text-gray-600">
           Don't have an account?
